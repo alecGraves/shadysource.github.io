@@ -4,46 +4,43 @@
  * The purpose of this project is to create a javascript app
  *  to speed up the labeling of picture data.
  **************************************************************/
-var debug = false;
+var debug = true;
 
 if (debug) console.log("canvas loaded.");
 
 context = document.getElementById('canvasInAPerfectWorld').getContext("2d");
 
 //on mouse click in canvas
-$('#canvas').mousedown(function(e){
-        if(debug) console.log("mousedown");
-        var mouseX = e.pageX - this.offsetLeft;
-        var mouseY = e.pageY - this.offsetTop;  
-        paint = true;
-        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-        redraw();
+$("canvas").mousedown(function(e){
+    if(debug) console.log("mousedown");
+    var mouseX = e.pageX - this.offsetLeft;
+    var mouseY = e.pageY - this.offsetTop;  
+    paint = true;
+    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+    redraw();
     }
 );
 
 //on mouse movement in canvas
-$('#canvas').mousemove(function(e){
-        if (debug) console.log("mousemove");
-        if(paint){
-            addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-            redraw();
-        }
+$("canvas").mousemove(function(e){
+    if (debug) console.log("mousemove");
+    if(paint){
+        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+        redraw();
     }
-);
+});
 
 //mouse unclick action
-$('#canvas').mouseup(function(e){
-        if (debug) console.log("mouseup");
-        paint = false;
-    }
-);
+$("canvas").mouseup(function(e){
+    if (debug) console.log("mouseup");
+    paint = false;
+});
 
 //mouse leaves the canvas
-$('#canvas').mouseleave(function(e){
-        if (debug) console.log("mouseleave");
-        paint = false;
-    }
-);
+$("canvas").mouseleave(function(e){
+    if (debug) console.log("mouseleave");
+    paint = false;
+});
 
 var clickX = new Array();
 var clickY = new Array();
