@@ -27,7 +27,7 @@ var curImgId = 0;
 
 var tmpLabels = new Array();
 var labels = new Array();
-labels.push("Number of Lables: 0");
+labels.push("Number of labels: 0");
 
 var info;
 
@@ -89,7 +89,7 @@ $("#submitButton").click(function(){
     if(labels[labels.length-1]=="EMPTY")
         labels.pop();
     var len = labels.length-1;
-    labels[0] = "Number of Lables: " + len.toString();
+    labels[0] = "Number of labels: " + len.toString();
     document.getElementById("numLabels").innerHTML = labels[0];
 });
 
@@ -97,7 +97,7 @@ $("#unSubmitButton").click(function(){
     if (labels.length > 1)
         tmpLabels.push(labels.pop());
     var len = labels.length-1;
-    labels[0] = "Number of Lables: " + len.toString();
+    labels[0] = "Number of labels: " + len.toString();
     document.getElementById("numLabels").innerHTML = labels[0];
 });
 
@@ -105,7 +105,7 @@ $("#unSubmitButton").click(function(){
 /*$("#reSubmitButton").click(function(){
     if (tmpLabels.length > 0)
         labels.push(tmpLabels.pop());
-    labels[0] = "Number of Lables: " + (labels.length-1).toString();
+    labels[0] = "Number of labels: " + (labels.length-1).toString();
     document.getElementById("numLabels").innerHTML = labels[0];
     resetVars();
 });*/
@@ -119,29 +119,22 @@ $("#downloadButton").click(function(){
     for (i = 0; i < labels.length; i++)
         labelsString = labelsString + labels[i];
     var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
-    var filesaver = saveAs(blob, filename);
+    saveAs(blob, filename);
     //cool, but not necesary
     //$("#abortButton").click(function(){filesaver.abort();});
     tmpLabels = new Array();
     labels = new Array();
-    labels.push("Number of Lables: 0");
+    labels.push("Number of labels: 0");
     document.getElementById("numLabels").innerHTML = labels[0];
-
 });
 
 $("#emailButton").click(function(){
-    var d = new Date();
-    var filename = d.getFullYear().toString() + "y" + d.getMonth().toString() + "m" + d.getDate().toString() 
-                + "d" + d.getHours().toString() + "h" + d.getMinutes().toString() + "m" + d.getSeconds().toString()
-                + "s" + d.getMilliseconds().toString();
-    var labelsString = info + "\n";
-    for (i = 0; i < labels.length; i++)
-        labelsString = labelsString + labels[i];
-    window.location = "mailto:sample@gmail.com"+"?subject="+filename+"&body="+labelsString;
-    tmpLabels = new Array();
-    labels = new Array();
-    labels.push("Number of Lables: 0");
-    document.getElementById("numLabels").innerHTML = labels[0];
+    var name = $('#nameBox').val();
+    if (name == "")
+        name = "AnonymousUser";
+    console.log(name);
+    document.location = "mailto:sample@gmail.com"+"?subject="+name+"&body="+info;
+    //seriously, I did this for science. dont be a dick.
 });
 
 function addClick(x, y, dragging){

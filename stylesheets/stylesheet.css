@@ -222,6 +222,20 @@ hr {
   background: url("../images/blacktocat.png") 0 0 no-repeat;
 }
 
+/* text box
+*/
+input[type="text"] {
+    width: 150px;
+    height: 23px;
+    padding-left: 8px;
+    font-size: 13px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    border: slategrey;
+    background-color: black;
+    color: chartreuse;
+}
+
 /* Links
    a, a:hover, a:visited
 */
