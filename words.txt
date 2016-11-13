@@ -1,2 +1,0 @@
-Welcome to my GigHub Page!
-This is a page that I created to facilitate the distribution of labor-intensive tasks. I am in the process of creating a lightweight java app for this site that will allow people to volunteer their time and label data. Once a sufficient number of data labels have been submitted, I will begin training a <a href=Óhttps://github.com/shadySource/tensorflow-faster-rcnnÓ>tensorflow neural network</a> to find patterns in the labeled data. 
