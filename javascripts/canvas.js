@@ -4,7 +4,7 @@
  * The purpose of this project is to create a javascript app
  *  to speed up the labeling of picture data.
  **************************************************************/
-context = document.getElementById('dataCanvas').getContext("2d");
+context = document.getElementById('pictureCanvas').getContext("2d");
 
 var clickX = new Array();
 var clickY = new Array();
@@ -14,7 +14,6 @@ var idx = 0;
 
 var paint;
 
-
 //colors
 var buoyRed = "#d10c0c";
 var buoyGreen = "#028c0e";
@@ -23,42 +22,58 @@ var pathMarkerBrown = "#441a04";
 var startGateOrange = "#ff6614";
 
 var curColor = buoyRed;
-var image = newImage();
+var image;
 var curImgId = 0;
+var imageIDs = new Array();
+
+var tmpLabel;
+var labels = new Array();
+
+newImage();
 
 //on mouse click in canvas
-$("#dataCanvas").mousedown(function(e){
+$("#pictureCanvas").mousedown(function(e){
     var mouseX = e.pageX - this.offsetLeft;
     var mouseY = e.pageY - this.offsetTop;  
     paint = true;
     addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-    redraw();
+    redraw(context);
     }
 );
 
 //on mouse movement in canvas
-$("#dataCanvas").mousemove(function(e){
+$("#pictureCanvas").mousemove(function(e){
     if(paint){
         addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-        redraw();
+        redraw(context);
     }
 });
 
 //mouse unclick action
-$("#dataCanvas").mouseup(function(e){
+$("#pictureCanvas").mouseup(function(e){
     paint = false;
 });
 
 //mouse leaves the canvas
-$("#dataCanvas").mouseleave(function(e){
+$("#pictureCanvas").mouseleave(function(e){
     paint = false;
 });
 
 $("#clearButton").click(function(){
-    //context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    context.drawImage(img, 0, 0, context.canvas.width, context.canvas.height);
+    context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
     resetVars();
-    getLabel();
+});
+
+$("#submitButton").click(function(){
+    labels.push(getLabel());
+    context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
+    resetVars();
+});
+
+$("#unSubmitButton").click(function(){
+    tmpLabel = labels.pop();
+    context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
+    resetVars();
 });
 
 function addClick(x, y, dragging){
@@ -68,35 +83,33 @@ function addClick(x, y, dragging){
     clickColor.push(curColor);
 }
 
-function redraw(){
-    context.lineJoin = "round";
-    context.lineWidth = 5;
+function redraw(ctx){
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 5;
     
     for(var i=idx; i < clickX.length; i++){		
-        context.beginPath();
+        ctx.beginPath();
         if(clickDrag[i] && i){
-                context.moveTo(clickX[i-1], clickY[i-1]);
+                ctx.moveTo(clickX[i-1], clickY[i-1]);
             }else{
-                context.moveTo(clickX[i]-1, clickY[i]);
+                ctx.moveTo(clickX[i]-1, clickY[i]);
             }
-            context.lineTo(clickX[i], clickY[i]);
-            context.closePath();
-            context.strokeStyle = clickColor[i];
-            context.stroke();
+            ctx.lineTo(clickX[i], clickY[i]);
+            ctx.closePath();
+            ctx.strokeStyle = clickColor[i];
+            ctx.stroke();
     }
 
     idx = clickX.length;
 }
 
 function newImage(){
-    img = new Image();
-    img.onload = function(){
-        return img;
+    var newImg = new Image();
+    newImg.src = 'https://github.com/shadySource/DATA/raw/master/neuron.jpg';
+    newImg.onload = function(){
+        image = newImg;
+        context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
     }
-    img.src = 'example.com/ex.jpg';
-
-    //Wait for image to finish loading
-
 }
 
 function resetVars(){
@@ -107,44 +120,64 @@ function resetVars(){
     clickDrag = new Array();
 }
 
+
 function getLabel(){
-
-}
-
-/*function getLabel(){
+    datacontext = createNewContext(context.canvas.width, context.canvas.height);
+    //clear image and reset index, them redraw
+    idx = 0;
+    redraw(datacontext);
     //resize the image
-    context.drawImage(img, 0, 0, context.canvas.width*0.2, context.canvas.height*0.2);
-    var imgData = context.getImageData(0,0,context.canvas.width*0.2,context.canvas.width*0.2);
+    var tmpImg = getCanvasImg(datacontext),
+        newWidth = context.canvas.width*0.2,
+        newHeight = context.canvas.height*0.2;
+    datacontext.clearRect(0, 0, newWidth, newHeight)
+    datacontext.drawImage(tmpImg, 0, 0, newWidth, newHeight);
+    var imgData = datacontext.getImageData(0, 0, newWidth, newHeight);
     var data = imgData.data;
-    var label = new Uint8Array();
+    var label = new Uint8Array(data.length/4);
     for(var i=0; i<data.length; i+=4){
         var red = data[i];
         var green = data[i+1];
         var blue = data[i+2];
-        var alpha = data[i+3];
         var hex = rgbToHex(red, green, blue)
         if (hex == buoyRed){
-            label.push(1);
+            label[i] = 1;
         }
         else if (hex == buoyGreen){
-            label.push(2);
+            label[i] = 2;
         }
         else if (hex == buoyYellow){
-            label.push(3);
+            label[i] = 3;
         }
         else if (hex == pathMarkerBrown){
-            label.push(4);
+            label[i] = 4;
         }
         else if (hex == startGateOrange){
-            label.push(5);
+            label[i] = 5;
         }
         else{
-            label.push(0);
+            label[i] = 0;
         }
     }
-    console.log(label);
     return label;
-}*/
+}
+
+function createNewContext(width, height) {
+    var canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    return canvas.getContext("2d");
+}
+
+function getCanvasImg(ctxt){
+    var canvasImage = new Image();
+    canvasImage.src = ctxt.canvas.toDataURL();
+    canvasImage.onload = function(){
+        return canvasImage;
+    //return canvasImage.onload
+    };
+    return canvasImage.onload();
+}
 
 function rgbToHex(R,G,B){
     return toHex(R)+toHex(G)+toHex(B)
