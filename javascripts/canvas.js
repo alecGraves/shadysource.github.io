@@ -86,16 +86,18 @@ $("#SGBtn").click(function(){curColor = startGateOrange});
 
 $("#submitButton").click(function(){
     labels.push(getLabel());
-    if(labels[labels.length-1]==="EMPTY")
+    if(labels[labels.length-1]=="EMPTY")
         labels.pop();
-    labels[0] = "Number of Lables: " + (labels.length-1).toString();
+    var len = labels.length-1;
+    labels[0] = "Number of Lables: " + len.toString();
     document.getElementById("numLabels").innerHTML = labels[0];
 });
 
 $("#unSubmitButton").click(function(){
     if (labels.length > 1)
         tmpLabels.push(labels.pop());
-    labels[0] = "Number of Lables: " + (labels.length-1).toString();
+    var len = labels.length-1;
+    labels[0] = "Number of Lables: " + len.toString();
     document.getElementById("numLabels").innerHTML = labels[0];
 });
 
@@ -122,6 +124,8 @@ $("#downloadButton").click(function(){
     //$("#abortButton").click(function(){filesaver.abort();});
     tmpLabels = new Array();
     labels = new Array();
+    labels.push("Number of Lables: 0");
+    document.getElementById("numLabels").innerHTML = labels[0];
 
 });
 
@@ -136,6 +140,8 @@ $("#emailButton").click(function(){
     window.location = "mailto:sample@gmail.com"+"?subject="+filename+"&body="+labelsString;
     tmpLabels = new Array();
     labels = new Array();
+    labels.push("Number of Lables: 0");
+    document.getElementById("numLabels").innerHTML = labels[0];
 });
 
 function addClick(x, y, dragging){
