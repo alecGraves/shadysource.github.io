@@ -4,8 +4,7 @@
  * The purpose of this project is to create a javascript app
  *  to speed up the labeling of picture data.
  **************************************************************/
-var debug = true,
-context = document.getElementById('pictureCanvas').getContext("2d");
+var context;
 
 var clickX = new Array();
 var clickY = new Array();
@@ -25,19 +24,26 @@ var startGateOrange = "#ff6614";
 var curColor = buoyRed;
 var image;
 var curImgId = 0;
-var imageIDs = new Array();
 
 var tmpLabels = new Array();
 var labels = new Array();
 labels.push("Number of Lables: 0");
 
-var info
+var info;
+
+$(window).on("load",function() {
+
+document.getElementById("numLabels").innerHTML = labels[0];
+context = document.getElementById('pictureCanvas').getContext("2d");
 
 newImage();
 
 $.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
-        info = JSON.stringify(data, null, 2);
+        info = JSON.stringify(data);
+        info = incriment(info);
     });
+
+
 
 //on mouse click in canvas
 $("#pictureCanvas").mousedown(function(e){
@@ -72,39 +78,64 @@ $("#clearButton").click(function(){
     resetVars();
 });
 
+$("#bRBtn").click(function(){curColor = buoyRed});
+$("#bGBtn").click(function(){curColor = buoyGreen});
+$("#bYBtn").click(function(){curColor = buoyYellow});
+$("#PMBtn").click(function(){curColor = pathMarkerBrown});
+$("#SGBtn").click(function(){curColor = startGateOrange});
+
 $("#submitButton").click(function(){
     labels.push(getLabel());
-    labels[0] = "Number of Lables: " + (labels.length-1).toString() + "\n";
-    newImage();
-    resetVars();
+    if(labels[labels.length-1]==="EMPTY")
+        labels.pop();
+    labels[0] = "Number of Lables: " + (labels.length-1).toString();
+    document.getElementById("numLabels").innerHTML = labels[0];
 });
 
 $("#unSubmitButton").click(function(){
     if (labels.length > 1)
         tmpLabels.push(labels.pop());
-    labels[0] = "Number of Lables: " + (labels.length-1).toString() + "\n";
-    resetVars();
+    labels[0] = "Number of Lables: " + (labels.length-1).toString();
+    document.getElementById("numLabels").innerHTML = labels[0];
 });
 
-$("#reSubmitButton").click(function(){
+//cool, but unnecessary
+/*$("#reSubmitButton").click(function(){
     if (tmpLabels.length > 0)
         labels.push(tmpLabels.pop());
-    labels[0] = "Number of Lables: " + (labels.length-1).toString() + "\n";
+    labels[0] = "Number of Lables: " + (labels.length-1).toString();
+    document.getElementById("numLabels").innerHTML = labels[0];
     resetVars();
-});
+});*/
 
 $("#downloadButton").click(function(){
     var d = new Date();
-    var filename = "y" + d.getFullYear().toString() + "m" + d.getMonth().toString() + "d" + d.getDate().toString() 
-                + "h" + d.getHours().toString() + "m" + d.getMinutes().toString() + "s" + d.getSeconds().toString()
-                + "ms" + d.getMilliseconds().toString();
-    labelsString = info + "\n";
+    var filename = d.getFullYear().toString() + "y" + d.getMonth().toString() + "m" + d.getDate().toString() 
+                + "d" + d.getHours().toString() + "h" + d.getMinutes().toString() + "m" + d.getSeconds().toString()
+                + "s" + d.getMilliseconds().toString();
+    var labelsString = info + "\n";
     for (i = 0; i < labels.length; i++)
         labelsString = labelsString + labels[i];
-    console.log(labelsString);
-    //var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
-    //var filesaver = saveAs(blob, filename);
-    $("#abortButton").click(function(){filesaver.abort();});
+    var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
+    var filesaver = saveAs(blob, filename);
+    //cool, but not necesary
+    //$("#abortButton").click(function(){filesaver.abort();});
+    tmpLabels = new Array();
+    labels = new Array();
+
+});
+
+$("#emailButton").click(function(){
+    var d = new Date();
+    var filename = d.getFullYear().toString() + "y" + d.getMonth().toString() + "m" + d.getDate().toString() 
+                + "d" + d.getHours().toString() + "h" + d.getMinutes().toString() + "m" + d.getSeconds().toString()
+                + "s" + d.getMilliseconds().toString();
+    var labelsString = info + "\n";
+    for (i = 0; i < labels.length; i++)
+        labelsString = labelsString + labels[i];
+    window.location = "mailto:sample@gmail.com"+"?subject="+filename+"&body="+labelsString;
+    tmpLabels = new Array();
+    labels = new Array();
 });
 
 function addClick(x, y, dragging){
@@ -151,9 +182,22 @@ function resetVars(){
     clickDrag = new Array();
 }
 
+function incriment(str){
+    inc = new String()
+    for (var i = 0; i < str.length; i++)
+        inc = inc + String.fromCharCode(str.charCodeAt(i) + 1);
+    return inc;
+}
+
+function decriment(str){
+    inc = new String()
+    for (var i = 0; i < str.length; i++)
+        inc = inc + String.fromCharCode(str.charCodeAt(i) - 1);
+    return inc;
+}
 
 function getLabel(){
-    datacontext = createNewContext(context.canvas.width, context.canvas.height);
+    var datacontext = createNewContext(context.canvas.width, context.canvas.height);
     //clear image and reset index, them redraw onto new canvas:
     idx = 0;
     redraw(datacontext);
@@ -166,7 +210,8 @@ function getLabel(){
     var imgData = datacontext.getImageData(0, 0, newWidth, newHeight);
     var data = imgData.data;
     //create label:
-    var label = "\n" + curImgId.toString() + "\n";
+    var noData = true;
+    var label = curImgId.toString() + "\n";
     for(var i=0; i<data.length; i+=4){
         var red = data[i];
         var green = data[i+1];
@@ -174,24 +219,33 @@ function getLabel(){
         var hex = rgbToHex(red, green, blue)
         if (hex === buoyRed){
             label = label + "R";// red buoy
+            if(noData) noData = false;
         }
         else if (hex === buoyGreen){
             label = label + "G";// green buoy
+            if(noData) noData = false;
         }
         else if (hex === buoyYellow){
             label = label + "Y";// yellow buoy
+            if(noData) noData = false;
         }
         else if (hex === pathMarkerBrown){
             label = label + "M";// marker
+            if(noData) noData = false;
         }
         else if (hex === startGateOrange){
             label = label + "S";// start gate
+            if(noData) noData = false;
         }
         else{
             label = label + "0";// no target
         }
-    }
-    return label;
+    }    
+
+    if(noData)
+        return "EMPTY";
+
+    return "\n" + label + "\n";
 }
 
 function createNewContext(width, height) {
@@ -223,4 +277,4 @@ function toHex(n) {
         + "0123456789abcdef".charAt(n%16);
 }
 
-//console.log(rgbToHex(255,102,20))
+});

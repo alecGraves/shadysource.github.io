@@ -19,7 +19,7 @@
         <h1>shadySource.GitHub.io</h1>
         <h2>by Alec Graves</h2>
 
-        <section id="downloads">
+        <section id="gitLink">
           <a href="https://github.com/shadySource" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
         </section>
       </div>
@@ -31,18 +31,22 @@
 <a id="welcome-to-github-page" class="anchor" href="#welcome-to-github-page" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to my GitHub Page!</h3>
 
 <p>This is a page that I created to facilitate the distribution of labor-intensive tasks. I am in the process of creating a lightweight java app for this site that will allow people to volunteer their time and label data. Once a sufficient number of data labels have been submitted, I will begin training a <a href="https://github.com/shadySource/tensorflow-faster-rcnn">tensorflow neural network</a> to find patterns in the labeled data.</p>
-
 <h3>
 <a id="data-labeling" class="anchor" href="#data-labeling" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data Labeler</h3>
 <canvas id="pictureCanvas" width="640" height="480" style="border:1px solid #000000;"></canvas>
+<p id="numLabels"></p>
+<button id="clearButton" type="button">clear</button>
+<button id="bRBtn" type="button">buoyR</button>
+<button id="bGBtn" type="button">buoyG</button>
+<button id="bYBtn" type="button">buoyY</button>
+<button id="PMBtn" type="button">PthMrk</button>
+<button id="SGBtn" type="button">StGate</button>
 <p></p>
-<button id="clearButton" type="button">Clear</button>
 <button id="submitButton" type="button">Submit</button>
 <button id="unSubmitButton" type="button">unSubmit</button>
-<button id="reSubmitButton" type="button">reSubmit</button>
 <p></p>
 <button id="downloadButton" type="button">download</button>
-<button id="abortButton" type="button">cancel</button>
+<button id="emailButton" type="button">email</button>
 <script src="javascripts/canvas.js"></script>
 <p></p>
 <h3>
