@@ -179,6 +179,7 @@ function newImage(){
     var newImg = new Image();
     newImg.onload = function(){
         image = newImg;
+        curImgURL = imageURLs[urlIdx];
         context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
     }
     newImg.src = imageURLs[urlIdx];
