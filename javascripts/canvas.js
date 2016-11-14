@@ -43,12 +43,12 @@ context = document.getElementById('pictureCanvas').getContext("2d");
 $.get(imageURLFile,function(data){
     imageURLs = data.split("\n");
     newImage();
-});
+
 
 $.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
     info = JSON.stringify(data);
     info = incriment(info);
-});
+
 
 //on mouse click in canvas
 $("#pictureCanvas").mousedown(function(e){
@@ -73,11 +73,13 @@ $("#pictureCanvas").mousemove(function(e){
 //mouse unclick action
 $("#pictureCanvas").mouseup(function(e){
     paint = false;
+    return false;
 });
 
 //mouse leaves the canvas
 $("#pictureCanvas").mouseleave(function(e){
     paint = false;
+    return false;
 });
 
 $("#clearButton").click(function(){
@@ -204,10 +206,10 @@ function incriment(str){
 }
 
 function decriment(str){
-    inc = new String()
+    dec = new String()
     for (var i = 0; i < str.length; i++)
-        inc = inc + String.fromCharCode(str.charCodeAt(i) - 1);
-    return inc;
+        dec = dec + String.fromCharCode(str.charCodeAt(i) - 1);
+    return dec;
 }
 
 function getLabel(){
@@ -222,6 +224,7 @@ function getLabel(){
     datacontext.clearRect(0, 0, newWidth, newHeight)
     datacontext.drawImage(tmpImg, 0, 0, newWidth, newHeight);
     var imgData = datacontext.getImageData(0, 0, newWidth, newHeight);
+    newWidth = newWidth*4;//this is the with of the img in datapoints
     var data = imgData.data;
     //create label:
     var noData = true;
@@ -256,6 +259,9 @@ function getLabel(){
         }
         else{
             label = label + "0";// no target
+        }
+        if (i%(newWidth) === 0){
+            label = label + "\n";
         }
     }    
 
@@ -293,5 +299,6 @@ function toHex(n) {
     return "0123456789abcdef".charAt((n-n%16)/16)
         + "0123456789abcdef".charAt(n%16);
 }
-
+});
+});
 });
