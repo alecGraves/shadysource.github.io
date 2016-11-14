@@ -21,12 +21,15 @@ var buoyGreen = "#028c0e";
 var buoyYellow = "#e6f727";
 var pathMarkerBrown = "#441a04";
 var startGateOrange = "#ff6614";
+var octogonBlk = "#0a0807";
 
 var curColor = buoyRed;
 var image;
-var curImgId = 0;
+var curImgURL = "";
+var imageURLFile = "https://raw.githubusercontent.com/shadySource/DATA/master/underwater/url.txt";
+var imageURLs = new Array();
 
-var tmpLabels = new Array();
+var tmpLabel;
 var labels = new Array();
 labels.push("Number of labels: 0");
 
@@ -37,14 +40,15 @@ $(window).on("load",function() {
 document.getElementById("numLabels").innerHTML = labels[0];
 context = document.getElementById('pictureCanvas').getContext("2d");
 
-newImage();
+$.get(imageURLFile,function(data){
+    imageURLs = data.split("\n");
+    newImage();
+});
 
 $.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
-        info = JSON.stringify(data);
-        info = incriment(info);
-    });
-
-
+    info = JSON.stringify(data);
+    info = incriment(info);
+});
 
 //on mouse click in canvas
 $("#pictureCanvas").mousedown(function(e){
@@ -84,21 +88,20 @@ $("#bGBtn").click(function(){curColor = buoyGreen});
 $("#bYBtn").click(function(){curColor = buoyYellow});
 $("#PMBtn").click(function(){curColor = pathMarkerBrown});
 $("#SGBtn").click(function(){curColor = startGateOrange});
+$("#OCTbtn").click(function(){curColor = octogonBlk});
 
 $("#submitButton").click(function(){
     labels.push(getLabel());
     if(labels[labels.length-1]=="EMPTY")
         labels.pop();
-    var len = labels.length-1;
-    labels[0] = "Number of labels: " + len.toString();
+    labels[0] = "Number of labels: " + (labels.length-1).toString();
     document.getElementById("numLabels").innerHTML = labels[0];
 });
 
 $("#unSubmitButton").click(function(){
     if (labels.length > 1)
-        tmpLabels.push(labels.pop());
-    var len = labels.length-1;
-    labels[0] = "Number of labels: " + len.toString();
+        labels.pop();
+    labels[0] = "Number of labels: " + (labels.length-1).toString();
     document.getElementById("numLabels").innerHTML = labels[0];
 });
 
@@ -153,7 +156,7 @@ function addClick(x, y, dragging){
 
 function redraw(ctx){
     ctx.lineJoin = "round";
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 10;
     
     for(var i=idx; i < clickX.length; i++){		
         ctx.beginPath();
@@ -172,12 +175,14 @@ function redraw(ctx){
 }
 
 function newImage(){
+    var urlIdx = Math.floor((Math.random() * imageURLs.length));
     var newImg = new Image();
-    newImg.src = 'https://github.com/shadySource/DATA/raw/master/neuron.jpg';
     newImg.onload = function(){
         image = newImg;
         context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
     }
+    newImg.src = imageURLs[urlIdx];
+    
 }
 
 function resetVars(){
@@ -217,7 +222,7 @@ function getLabel(){
     var data = imgData.data;
     //create label:
     var noData = true;
-    var label = curImgId.toString() + "\n";
+    var label = curImgURL + "\n";
     for(var i=0; i<data.length; i+=4){
         var red = data[i];
         var green = data[i+1];
@@ -242,6 +247,9 @@ function getLabel(){
         else if (hex === startGateOrange){
             label = label + "S";// start gate
             if(noData) noData = false;
+        }
+        else if(hex === octogonBlk){
+            label = label + "C";
         }
         else{
             label = label + "0";// no target
