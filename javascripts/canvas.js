@@ -1,6 +1,7 @@
 /**************************************************************
  * This code was adapted from a tutorial by William Malone
  *  explaining how to make a javascript drawing app.
+ * I would like to thank the internet for helping me do this.
  * The purpose of this project is to create a javascript app
  *  to speed up the labeling of picture data.
  **************************************************************/
@@ -101,6 +102,11 @@ $("#unSubmitButton").click(function(){
     document.getElementById("numLabels").innerHTML = labels[0];
 });
 
+$("#newImageButton").click(function(){
+    newImage();
+    resetVars();
+});
+
 //cool, but unnecessary
 /*$("#reSubmitButton").click(function(){
     if (tmpLabels.length > 0)
@@ -119,7 +125,8 @@ $("#downloadButton").click(function(){
     for (i = 0; i < labels.length; i++)
         labelsString = labelsString + labels[i];
     var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
-    saveAs(blob, filename);
+    if (labels.length > 1)
+        saveAs(blob, filename);
     //cool, but not necesary
     //$("#abortButton").click(function(){filesaver.abort();});
     tmpLabels = new Array();
