@@ -260,7 +260,7 @@ function getLabel(){
         else{
             label = label + "0";// no target
         }
-        if (i%(newWidth) === 0){
+        if (i%(newWidth) === 0 && i > 0){
             label = label + "\n";
         }
     }    
