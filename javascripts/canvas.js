@@ -28,12 +28,14 @@ var image;
 var curImgURL = "";
 var imageURLFile = "https://raw.githubusercontent.com/shadySource/DATA/master/underwater/url.txt";
 var imageURLs = new Array();
+var imageSet = false;
 
 var tmpLabel;
 var labels = new Array();
 labels.push("Number of labels: 0");
 
-var info;
+var info = "";
+var infoSet = false;
 
 $(window).on("load",function() {
 
@@ -43,49 +45,52 @@ context = document.getElementById('pictureCanvas').getContext("2d");
 $.get(imageURLFile,function(data){
     imageURLs = data.split("\n");
     newImage();
-
+});
 
 $.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
     info = JSON.stringify(data);
     info = incriment(info);
+    infoSet = true;
+});
 
-
-//on mouse click in canvas
-$("#pictureCanvas").mousedown(function(e){
-    var mouseX = e.pageX - this.offsetLeft;
-    var mouseY = e.pageY - this.offsetTop;  
-    paint = true;
-    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-    redraw(context);
-    return false;
-    }
-);
-
-//on mouse movement in canvas
-$("#pictureCanvas").mousemove(function(e){
-    if(paint){
-        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+function enableDrawing(){
+    //on mouse click in canvas
+    $("#pictureCanvas").mousedown(function(e){
+        var mouseX = e.pageX - this.offsetLeft;
+        var mouseY = e.pageY - this.offsetTop;  
+        paint = true;
+        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
         redraw(context);
         return false;
-    }
-});
+        }
+    );
 
-//mouse unclick action
-$("#pictureCanvas").mouseup(function(e){
-    paint = false;
-    return false;
-});
+    //on mouse movement in canvas
+    $("#pictureCanvas").mousemove(function(e){
+        if(paint){
+            addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+            redraw(context);
+            return false;
+        }
+    });
 
-//mouse leaves the canvas
-$("#pictureCanvas").mouseleave(function(e){
-    paint = false;
-    return false;
-});
+    //mouse unclick action
+    $("#pictureCanvas").mouseup(function(e){
+        paint = false;
+        return false;
+    });
 
-$("#clearButton").click(function(){
-    context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
-    resetVars();
-});
+    //mouse leaves the canvas
+    $("#pictureCanvas").mouseleave(function(e){
+        paint = false;
+        return false;
+    });
+
+    $("#clearButton").click(function(){
+        context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
+        resetVars();
+    });
+}
 
 $("#bRBtn").click(function(){curColor = buoyRed});
 $("#bGBtn").click(function(){curColor = buoyGreen});
@@ -132,7 +137,7 @@ $("#downloadButton").click(function(){
     for (i = 0; i < labels.length; i++)
         labelsString = labelsString + labels[i];
     var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
-    if (labels.length > 1)
+    if (labels.length > 1 && infoSet)
         saveAs(blob, filename);
     //cool, but not necesary
     //$("#abortButton").click(function(){filesaver.abort();});
@@ -185,6 +190,10 @@ function newImage(){
         image = newImg;
         curImgURL = imageURLs[urlIdx];
         context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
+        if (imageSet === false){
+            enableDrawing();
+            imageSet = true;
+        }
     }
     newImg.src = imageURLs[urlIdx];
     
@@ -300,5 +309,4 @@ function toHex(n) {
         + "0123456789abcdef".charAt(n%16);
 }
 });
-});
-});
+
