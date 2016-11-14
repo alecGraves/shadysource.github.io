@@ -143,7 +143,7 @@ $("#emailButton").click(function(){
     if (name == "")
         name = "AnonymousUser";
     console.log(name);
-    document.location = "mailto:sample@gmail.com"+"?subject="+name+"&body="+info;
+    document.location = "mailto:shadysourcebot@gmail.com"+"?subject="+name+"&body="+info;
     //seriously, I did this for science. dont be a dick.
 });
 
