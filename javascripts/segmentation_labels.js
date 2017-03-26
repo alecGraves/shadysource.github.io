@@ -34,8 +34,8 @@ var tmpLabel;
 var labels = new Array();
 labels.push("Number of labels: 0");
 
-var info = "";
-var infoSet = false;
+// var info = "";
+// var infoSet = false;
 
 $(window).on("load",function() {
 
@@ -47,11 +47,11 @@ $.get(imageURLFile,function(data){
     newImage();
 });
 
-$.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
-    info = JSON.stringify(data);
-    info = incriment(info);
-    infoSet = true;
-});
+// $.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
+//     info = JSON.stringify(data);
+//     info = incriment(info);
+//     infoSet = true;
+// });
 
 function enableDrawing(){
     //on mouse click in canvas
@@ -133,11 +133,11 @@ $("#downloadButton").click(function(){
     var filename = d.getFullYear().toString() + "y" + d.getMonth().toString() + "m" + d.getDate().toString() 
                 + "d" + d.getHours().toString() + "h" + d.getMinutes().toString() + "m" + d.getSeconds().toString()
                 + "s" + d.getMilliseconds().toString();
-    var labelsString = info + "\n";
+    var labelsString = "";
     for (i = 0; i < labels.length; i++)
-        labelsString = labelsString + labels[i];
+        labelsString = labels[i];
     var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
-    if (labels.length > 1 && infoSet)
+    if (labels.length > 1)
         saveAs(blob, filename);
     //cool, but not necesary
     //$("#abortButton").click(function(){filesaver.abort();});
@@ -151,8 +151,7 @@ $("#emailButton").click(function(){
     var name = $('#nameBox').val();
     if (name == "")
         name = "AnonymousUser";
-    console.log(name);
-    document.location = "mailto:shadysourcebot@gmail.com"+"?subject="+name+"&body="+info;
+    document.location = "mailto:shadysourcebot@gmail.com"+"?subject="+"DATA"+"&body="+"Hello shadySource Bot,\n\nI have a contribution to make!!\n\nsincerely\n"+name;
     //seriously, I did this for science. dont be a dick.
 });
 
