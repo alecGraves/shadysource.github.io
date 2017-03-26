@@ -45,12 +45,6 @@ $.get(imageURLFile,function(data){
     newImage();
 });
 
-// $.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
-//     info = JSON.stringify(data);
-//     info = incriment(info);
-//     infoSet = true;
-// });
-
 function enableDrawing(){
     //on mouse click in canvas
     $("#pictureCanvas").mousedown(function(e){
@@ -202,20 +196,6 @@ function resetVars(){
     clickColor = new Array();
 }
 
-function incriment(str){
-    inc = new String()
-    for (var i = 0; i < str.length; i++)
-        inc = inc + String.fromCharCode(str.charCodeAt(i) + 1);
-    return inc;
-}
-
-function decriment(str){
-    dec = new String()
-    for (var i = 0; i < str.length; i++)
-        dec = dec + String.fromCharCode(str.charCodeAt(i) - 1);
-    return dec;
-}
-
 function getLabel(){
     //create label:
     var label = curImgURL + "\n";
@@ -239,23 +219,6 @@ function nameColor(color){
     else if (color === pathMarkerBrown) return "path_marker";
     else if (color === startGateOrange) return "start_gate";
     else if (color === octogonBlk) return "octogon";
-}
-
-function createNewContext(width, height) {
-    var canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    return canvas.getContext("2d");
-}
-
-function getCanvasImg(ctxt){
-    var canvasImage = new Image();
-    canvasImage.src = ctxt.canvas.toDataURL();
-    canvasImage.onload = function(){
-        return canvasImage;
-    //return canvasImage.onload
-    };
-    return canvasImage.onload();
 }
 
 });
