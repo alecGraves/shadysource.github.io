@@ -4,6 +4,14 @@
  * I would like to thank the internet for helping me do this.
  * The purpose of this project is to create a javascript app
  *  to speed up the labeling of picture data.
+ * 
+ * required document at "https://raw.githubusercontent.com/shadySource/DATA/master/underwater/url.txt"
+ *     needs format of: 
+ *     dataset1 dataset2 ... datasetN
+ *     <dataset1 URLs seperated by ' '>
+ *     <dataset2 URLs seperated by ' '>
+ *     ...
+ *     <datasetN URLs seperated by ' '>
  **************************************************************/
 var context;
 
@@ -26,6 +34,8 @@ var image;
 var curImgURL = "";
 var imageURLFile = "https://raw.githubusercontent.com/shadySource/DATA/master/underwater/url.txt";
 var imageURLs = new Array();
+var dataset = 0;
+var imageIdx = 0;
 var imageSet = false;
 
 var tmpLabel;
@@ -37,13 +47,38 @@ labels.push("Number of labels: 0");
 
 $(window).on("load",function() {
 
-document.getElementById("numLabels").innerHTML = labels[0];
+document.getElementById("numLabels").innerHTML = labels[0]+ "\t\tCurrent Dataset: " + dataset.toString()+ "\tImage: "+imageIdx.toString();
 context = document.getElementById('pictureCanvas').getContext("2d");
 
 $.get(imageURLFile,function(data){
     imageURLs = data.split("\n");
     newImage();
-});
+
+
+// Get datasets and add them to the dropdown menu
+dropdown = document.getElementById("dataList");
+datasets = imageURLs[0].split(' ');
+for(var i = 0; i < datasets.length; i++){
+    var lin = document.createElement("a");
+    lin.setAttribute("href","#");
+    lin.setAttribute("id","dataset" + i.toString());
+    var node = document.createTextNode(datasets[i]);
+    lin.appendChild(node);
+    dropdown.appendChild(lin);
+    dropdownCB(i);
+}
+
+function dropdownCB(i){
+    $("#dataset" + i.toString()).click(function(){
+        dataset = i;
+        newImage();
+        resetVars();
+        document.getElementById("numLabels").innerHTML = labels[0] + "\t\tCurrent Dataset: " + dataset.toString() + "\tImage: "+imageIdx.toString();
+    });
+}
+
+$("#datbtn").click(function(){document.getElementById("dataList").classList.toggle("show");});
+
 
 function enableDrawing(){
     //on mouse click in canvas
@@ -108,14 +143,14 @@ $("#submitButton").click(function(){
     if(labels[labels.length-1]=="EMPTY")
         labels.pop();
     labels[0] = "Number of labels: " + (labels.length-1).toString();
-    document.getElementById("numLabels").innerHTML = labels[0];
+    document.getElementById("numLabels").innerHTML = labels[0] + "\t\tCurrent Dataset: " + dataset.toString() + "\tImage: "+imageIdx.toString();
 });
 
 $("#unSubmitButton").click(function(){
     if (labels.length > 1)
         labels.pop();
     labels[0] = "Number of labels: " + (labels.length-1).toString();
-    document.getElementById("numLabels").innerHTML = labels[0];
+    document.getElementById("numLabels").innerHTML = labels[0] + "\t\tCurrent Dataset: " + dataset.toString() + "\tImage: "+imageIdx.toString();
 });
 
 $("#newImageButton").click(function(){
@@ -148,14 +183,14 @@ $("#downloadButton").click(function(){
     tmpLabels = new Array();
     labels = new Array();
     labels.push("Number of labels: 0");
-    document.getElementById("numLabels").innerHTML = labels[0];
+    document.getElementById("numLabels").innerHTML = labels[0] + + "\t\tCurrent Dataset: " + dataset.toString();
 });
 
 $("#emailButton").click(function(){
     var name = $('#nameBox').val();
     if (name == "")
         name = "AnonymousUser";
-    document.location = "mailto:shadysourcebot@gmail.com"+"?subject="+"DATA"+"&body="+"Hello shadySourceBot,\n\nI have a contribution to make!!\n\nsincerely\n"+name;
+    document.location = "mailto:shadysourcebot@gmail.com"+"?subject="+"DATA"+"&body="+"Hello shadySourceBot,\n\nI have a contribution to make!!\n\nSincerely,\n"+name;
     //seriously, I did this for science. dont be a dick.
 });
 
@@ -165,7 +200,7 @@ function redraw(ctx){
     ctx.lineWidth = 5;
     for(var i=0; i < clickX.length; i+=2){
         ctx.beginPath()
-        console.log(clickX[i], clickY[i], clickX[i+1]-clickX[i], clickY[i+1]-clickY[i]);
+        // console.log(clickX[i], clickY[i], clickX[i+1]-clickX[i], clickY[i+1]-clickY[i]);
         ctx.rect(clickX[i], clickY[i], clickX[i+1]-clickX[i], clickY[i+1]-clickY[i]);
         ctx.strokeStyle = clickColor[i/2];
         ctx.stroke();
@@ -174,18 +209,23 @@ function redraw(ctx){
 }
 
 function newImage(){
-    var urlIdx = Math.floor((Math.random() * imageURLs.length));
+    urls = imageURLs[dataset + 1].split(' ');
+    if(imageIdx != urls.length-1){
+        imageIdx += 1;
+    }else{
+        imageIdx = Math.floor((Math.random() * urls.length));
+    }
     var newImg = new Image();
     newImg.onload = function(){
         image = newImg;
-        curImgURL = imageURLs[urlIdx];
+        curImgURL = urls[imageIdx];
         context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
         if (imageSet === false){
             enableDrawing();
             imageSet = true;
         }
     }
-    newImg.src = imageURLs[urlIdx];
+    newImg.src = urls[imageIdx];
     
 }
 
@@ -223,3 +263,4 @@ function nameColor(color){
 
 });
 
+});
