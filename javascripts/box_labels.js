@@ -5,7 +5,7 @@
  * The purpose of this project is to create a javascript app
  *  to speed up the labeling of picture data.
  * 
- * required document at "https://raw.githubusercontent.com/shadySource/DATA/master/underwater/url.txt"
+ * required document at "https://raw.githubusercontent.com/shadySource/DATA/master/url.txt"
  *     needs format of: 
  *     dataset1 dataset2 ... datasetN
  *     <dataset1 URLs seperated by ' '>
