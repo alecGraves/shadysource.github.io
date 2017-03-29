@@ -35,19 +35,24 @@ var curImgURL = "";
 var imageURLFile = "https://raw.githubusercontent.com/shadySource/DATA/master/url.txt";
 var imageURLs = new Array();
 var dataset = 0;
-var imageIdx = 0;
+var imageIdx = -1;
 var imageSet = false;
 
 var tmpLabel;
 var labels = new Array();
 labels.push("Number of labels: 0");
 
+
+function updateDescription(){
+    document.getElementById("numLabels").innerHTML = labels[0]+ "\t\tCurrent Dataset: " + dataset.toString()+ "\tImage: "+imageIdx.toString();
+}
 // var info = "";
 // var infoSet = false;
 
 $(window).on("load",function() {
 
-document.getElementById("numLabels").innerHTML = labels[0]+ "\t\tCurrent Dataset: " + dataset.toString()+ "\tImage: "+imageIdx.toString();
+updateDescription();
+
 context = document.getElementById('pictureCanvas').getContext("2d");
 
 $.get(imageURLFile,function(data){
@@ -71,9 +76,10 @@ for(var i = 0; i < datasets.length; i++){
 function dropdownCB(i){
     $("#dataset" + i.toString()).click(function(){
         dataset = i;
+        imageIdx = -1;
         newImage();
         resetVars();
-        document.getElementById("numLabels").innerHTML = labels[0] + "\t\tCurrent Dataset: " + dataset.toString() + "\tImage: "+imageIdx.toString();
+        updateDescription();
     });
 }
 
@@ -143,19 +149,22 @@ $("#submitButton").click(function(){
     if(labels[labels.length-1]=="EMPTY")
         labels.pop();
     labels[0] = "Number of labels: " + (labels.length-1).toString();
-    document.getElementById("numLabels").innerHTML = labels[0] + "\t\tCurrent Dataset: " + dataset.toString() + "\tImage: "+imageIdx.toString();
+    newImage();
+    resetVars();
+    updateDescription();
 });
 
 $("#unSubmitButton").click(function(){
     if (labels.length > 1)
         labels.pop();
     labels[0] = "Number of labels: " + (labels.length-1).toString();
-    document.getElementById("numLabels").innerHTML = labels[0] + "\t\tCurrent Dataset: " + dataset.toString() + "\tImage: "+imageIdx.toString();
+    updateDescription();
 });
 
 $("#newImageButton").click(function(){
     newImage();
     resetVars();
+    updateDescription();
 });
 
 //cool, but unnecessary
@@ -183,7 +192,7 @@ $("#downloadButton").click(function(){
     tmpLabels = new Array();
     labels = new Array();
     labels.push("Number of labels: 0");
-    document.getElementById("numLabels").innerHTML = labels[0] + + "\t\tCurrent Dataset: " + dataset.toString();
+    updateDescription();
 });
 
 $("#emailButton").click(function(){
