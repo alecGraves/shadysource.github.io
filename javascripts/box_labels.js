@@ -25,9 +25,9 @@ var paint;
 var buoyRed = "#d10c0c";
 var buoyGreen = "#028c0e";
 var buoyYellow = "#e6f727";
-var pathMarkerBrown = "#441a04";
+var pathMarkerBrown = "#f4a460";
 var startGateOrange = "#ff6614";
-var octogonBlk = "#0a0807";
+var channelBlk = "#0a0807";
 
 var curColor = buoyRed;
 var image;
@@ -142,7 +142,7 @@ $("#bGBtn").click(function(){curColor = buoyGreen});
 $("#bYBtn").click(function(){curColor = buoyYellow});
 $("#PMBtn").click(function(){curColor = pathMarkerBrown});
 $("#SGBtn").click(function(){curColor = startGateOrange});
-$("#OCTbtn").click(function(){curColor = octogonBlk});
+$("#CHANbtn").click(function(){curColor = channelBlk});
 
 $("#submitButton").click(function(){
     labels.push(getLabel());
@@ -183,7 +183,7 @@ $("#downloadButton").click(function(){
                 + "s" + d.getMilliseconds().toString();
     var labelsString = "";
     for (i = 0; i < labels.length; i++)
-        labelsString = labels[i];
+        labelsString += labels[i];
     var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
     if (labels.length > 1)
         saveAs(blob, filename);
@@ -206,7 +206,7 @@ $("#emailButton").click(function(){
 function redraw(ctx){
     context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
     ctx.lineJoin = "round";
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 1;
     for(var i=0; i < clickX.length; i+=2){
         ctx.beginPath()
         // console.log(clickX[i], clickY[i], clickX[i+1]-clickX[i], clickY[i+1]-clickY[i]);
@@ -267,7 +267,7 @@ function nameColor(color){
     else if (color === buoyYellow) return "yellow_buoy";
     else if (color === pathMarkerBrown) return "path_marker";
     else if (color === startGateOrange) return "start_gate";
-    else if (color === octogonBlk) return "octogon";
+    else if (color === channelBlk) return "channel";
 }
 
 });
