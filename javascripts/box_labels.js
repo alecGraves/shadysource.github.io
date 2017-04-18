@@ -44,7 +44,11 @@ labels.push("Number of labels: 0");
 
 
 function updateDescription(){
-    document.getElementById("numLabels").innerHTML = labels[0]+ "\t\tCurrent Dataset: " + dataset.toString()+ "\tImage: "+imageIdx.toString();
+    var imageNum = 0;
+    if (imageIdx != -1){
+        imageNum = imageIdx;
+    }
+    document.getElementById("numLabels").innerHTML = labels[0]+ "\t\tCurrent Dataset: " + dataset.toString()+ "\tImage: "+imageNum.toString();
 }
 // var info = "";
 // var infoSet = false;
