@@ -186,7 +186,7 @@ $("#downloadButton").click(function(){
                 + "d" + d.getHours().toString() + "h" + d.getMinutes().toString() + "m" + d.getSeconds().toString()
                 + "s" + d.getMilliseconds().toString();
     var labelsString = "";
-    for (i = 0; i < labels.length; i++)
+    for (i = 1; i < labels.length; i++)
         labelsString += labels[i];
     var blob =  new Blob([labelsString],{type: "text/plain;charset=utf-8"});
     if (labels.length > 1)
