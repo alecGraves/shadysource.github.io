@@ -35,7 +35,7 @@
 <h3>
 <a id="data-labeling" class="anchor" href="#data-labeling" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Underwater Data Labeler</h3>
 <div class="dropdown">
-  <button id='datbtn' class="dropbtn">Choose Dataset</button>
+  <button id='dataBtn' class="dropbtn" type="button" data-toggle="dropdown">Choose Dataset</button>
   <div id="dataList" class="dropdown-content">
     <!--<a id="link1" href="#">Link 1</a>
     <a id="link2" href="#">Link 2</a>
@@ -43,15 +43,15 @@
   </div>
 </div>
 <canvas id="pictureCanvas" width="640" height="480" style="border:1px solid #000000;"></canvas>
-<p id="numLabels"></p>
-<p id="currentDataset"></p>
+<p id="canvasDescription"></p>
 <button id="bRBtn" class="btn">buoyR</button>
 <button id="bGBtn" class="btn">buoyG</button>
 <button id="bYBtn" class="btn">buoyY</button>
 <button id="PMBtn" class="btn">PthMrk</button>
 <button id="SGBtn" class="btn">StGate</button>
 <button id="CHANbtn" class="btn">Channel</button>
-<p><button id="clearButton" class="btn">clear</button>
+<p><button id="undoButton" class="btn">undo</button>
+<button id="clearButton" class="btn">clear</button>
 <button id="submitButton" class="btn">Submit</button>
 <button id="unSubmitButton" class="btn">unSubmit</button>
 <button id="newImageButton" class="btn">New Image</button></p>
