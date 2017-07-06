@@ -93,8 +93,7 @@ function enableDrawing(){
         clickX.push(e.pageX - this.offsetLeft);
         clickColor.push(curColor);
         return false;
-        }
-    );
+    });
 
     //on mouse movement in canvas
     $("#pictureCanvas").mousemove(function(e){
@@ -138,11 +137,56 @@ function enableDrawing(){
         clickY.pop();
         clickColor.pop();
         redraw(context);
-    })
+    });
 
     $("#clearButton").click(function(){
         context.drawImage(image, 0, 0, context.canvas.width, context.canvas.height);
         resetVars();
+    });
+
+    $("#submitButton").click(function(){
+        tmpLabel = getLabel();
+        if(tmpLabel != "EMPTY"){
+            labels.push(tmpLabel)
+        }
+        newImage();
+        resetVars();
+        updateDescription();
+    });
+
+    $(document).keydown(function(e){
+        if(e.which == 13 || e.which == 32) {// enter or space keys
+            document.getElementById("submitButton").click();
+            return false;
+        } if (e.which == 39){ // right arrow
+            //next image
+            newImage(1);
+            resetVars();
+            updateDescription();
+            return false;
+        } if (e.which == 37){ // left arrow
+            // previous image
+            newImage(-1);
+            resetVars();
+            updateDescription();1
+            return false;
+        } if (e.which == 49){ // 1
+            curColor = buoyRed;
+            return false;
+        } if (e.which == 50){ // 2
+            curColor = buoyGreen;
+            return false;
+        } if (e.which == 51){ // 3
+            curColor = buoyYellow;
+            return false;
+        } if (e.which == 52){ // 4
+            curColor = pathMarkerBrown;
+            return false;
+        } if (e.which == 90){ // z
+            document.getElementById("undoButton").click();
+            return false;
+        }
+
     });
 }
 
@@ -153,18 +197,12 @@ $("#PMBtn").click(function(){curColor = pathMarkerBrown});
 $("#SGBtn").click(function(){curColor = startGateOrange});
 $("#CHANbtn").click(function(){curColor = channelBlk});
 
-$("#submitButton").click(function(){
-    tmpLabel = getLabel();
-    if(tmpLabel != "EMPTY"){
-        labels.push(tmpLabel)
-    }
-    newImage();
-    resetVars();
-    updateDescription();
-});
-
 $("#unSubmitButton").click(function(){
-    labels.pop();
+    resetVars();
+    var exists = labels.pop();
+    if (exists){
+        newImage(-1);
+    }
     updateDescription();
 });
 
@@ -174,14 +212,11 @@ $("#newImageButton").click(function(){
     updateDescription();
 });
 
-//cool, but unnecessary
-/*$("#reSubmitButton").click(function(){
-    if (tmpLabels.length > 0)
-        labels.push(tmpLabels.pop());
-    labels[0] = "Number of labels: " + (labels.length-1).toString();
-    document.getElementById("numLabels").innerHTML = labels[0];
+$("#prevImageButton").click(function(){
+    newImage(-1);
     resetVars();
-});*/
+    updateDescription();
+});
 
 $("#downloadButton").click(function(){
     if (labels.length > 0){
@@ -223,11 +258,13 @@ function redraw(ctx){
 
 }
 
-function newImage(incriment=true){
+function mod(n, m) {
+    return ((n % m) + m) % m;
+}
+
+function newImage(incriment=1){
     urls = imageURLs[dataset + 1].split(' ');
-    if(incriment){ // only incriment if not the first image.
-        imageIdx = (imageIdx + 1) % urls.length
-    }
+    imageIdx = mod(imageIdx + incriment, urls.length)
     var newImg = new Image();
     newImg.onload = function(){
         image = newImg;
@@ -245,6 +282,7 @@ function resetVars(){
     clickX = new Array();
     clickY = new Array();
     clickColor = new Array();
+    paint = false;
 }
 
 function getLabel(){
