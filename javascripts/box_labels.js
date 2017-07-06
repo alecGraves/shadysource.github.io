@@ -134,11 +134,10 @@ function enableDrawing(){
     $("#undoButton").click(function(){
         clickX.pop();
         clickY.pop();
-        clickColor.pop();
         clickX.pop();
         clickY.pop();
         clickColor.pop();
-        redraw(context)
+        redraw(context);
     })
 
     $("#clearButton").click(function(){
