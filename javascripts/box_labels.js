@@ -182,6 +182,9 @@ function enableDrawing(){
         } if (e.which == 52){ // 4
             curColor = pathMarkerBrown;
             return false;
+        } if (e.which == 53){ // 5
+            curColor = startGateOrange;
+            return false;
         } if (e.which == 90){ // z
             document.getElementById("undoButton").click();
             return false;
